@@ -18,10 +18,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: update package path
-        run: |
-          sed -i 's/\.\.\\.\.\.\.\.\.\\Packages/..\Packages/g' Net48MVC.csproj
-          cat Net48MVC.csproj
+      - name: Replace multiple files
+        uses: richardrigutins/replace-in-files@v2
+        with:
+          files: '**/*.csproj'
+          search-text: '..\..\..\..\Packages'
+          replacement-text: '..\Packages'
+          exclude: 'node_modules/**'
+          encoding: 'utf8'
+          max-parallelism: 10
+
+
 
       - name: Setup MSBuild path
         uses: microsoft/setup-msbuild@v1.0.2
