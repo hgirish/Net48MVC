@@ -18,6 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: update package path
+        run: |
+          sed -i 's/\.\.\\.\.\.\.\.\.\\Packages/..\Packages/g' Net48MVC/Net48MVC/Net48MVC.csproj
+          cat Net48MVC/Net48MVC/Net48MVC.csproj
+
       - name: Setup MSBuild path
         uses: microsoft/setup-msbuild@v1.0.2
 
@@ -25,7 +30,7 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
 
       - name: Restore NuGet packages
-        run: nuget Update-Package -reinstall -ignoredependencies
+        run: nuget restore
 
       - name: Publish to folder
         run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
