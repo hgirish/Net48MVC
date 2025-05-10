@@ -24,4 +24,41 @@ jobs:
     steps:
     - name: Send greeting
       run: echo "${{ github.event.inputs.env }}  ${{ github.event.inputs.region }}"
+    - uses: actions/checkout@v4
+
+    - name: Replace multiple files
+      uses: richardrigutins/replace-in-files@v2
+      with:
+          files: '**/*.csproj'
+          search-text: '..\..\..\..\Packages'
+          replacement-text: '..\Packages'
+          exclude: 'node_modules/**'
+          encoding: 'utf8'
+          max-parallelism: 10
+
+    - name: Copy env config file to release file
+    - run: |
+        cp Net48MVC/web.${{ github.event.inputs.env }} -${{ github.event.inputs.region }}.config Net48MVC/web.Release.config
+        cat Net48MVC/web.Release.config
+      
+
+
+
+    - name: Setup MSBuild path
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+
+    - name: Restore NuGet packages
+      run: nuget restore
+
+    - name: Publish to folder
+      run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+          name: ASP-app
+          path: '/published/**'
       
