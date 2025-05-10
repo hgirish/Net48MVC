@@ -1,0 +1,29 @@
+name: Mixed inputs
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: environment
+        options: 
+        - dev
+        - qa
+        - prod
+      region:
+        type: choice
+        description: region
+        options: 
+        - eastus2
+        - centralus
+
+      environment:
+        type: environment
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send greeting
+      run: echo "${{ github.event.inputs.env }}  ${{ github.event.inputs.region }}"
