@@ -38,6 +38,7 @@ jobs:
 
     - name: Copy env config file to release file
       run: |
+        ls 
         cp "Net48MVC/web.${{ github.event.inputs.env }}-${{ github.event.inputs.region }}.config" Net48MVC/web.Release.config
         cat Net48MVC/web.Release.config
       
